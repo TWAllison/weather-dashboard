@@ -1,4 +1,7 @@
 var weatherEl = $("#current-weather")
+var previousSearch = JSON.parse(localStorage.getItem("City Name")) || [];
+var fiveDayEl = $("#five-day");
+var fiveDayHeaderEl = $("#five-day-header");
 
 var apiKey = "a6b61b1b7f92f9c968b0e70a23502785"
 //var cityName = "Reno"
@@ -21,18 +24,24 @@ $("#search-btn").on("click", function() {  // listen for click on search btn the
 var fetchWeatherData = function (cityName) {
     console.log(cityName);
 
-
     fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=imperial&appid=${apiKey}`)
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
                     console.log(data);
                     currentWeather(data);
+                    fiveDay(data);
                 })
             }
         });
 
+        saveSearch();
+
 };
+
+var saveSearch = function() {
+    localStorage.setItem("City Name", JSON.stringify(previousSearch)); // save to local
+}
 
 var currentWeather = function(weather) {
 
@@ -44,15 +53,15 @@ var currentWeather = function(weather) {
         if (response.ok) {
             response.json().then(function (data) {
                 console.log(data);
-
+                weatherEl.empty(); // clears current weather box to prevent more than one being created
 
                 var cityTitle = document.createElement("h2")
                 cityTitle.textContent = weather.city.name + "(" + moment.unix(weather.list[0].dt).format("MMM DD, YYYY") + ")"; // take data returned at index 0 (current hour) 
 
-                var forcastIcon = document.createElement("img")
-                forcastIcon.setAttribute("src", `https://openweathermap.org/img/wn/${weather.list[0].weather[0].icon}@2x.png` )
+                var forecastIcon = document.createElement("img")
+                forecastIcon.setAttribute("src", `https://openweathermap.org/img/wn/${weather.list[0].weather[0].icon}@2x.png` )
 
-                cityTitle.append(forcastIcon) // append current weather icon to title
+                cityTitle.append(forecastIcon) // append current weather icon to title
                 weatherEl.append(cityTitle) // append the title to the weatherEL on page (with added icon)
 
                 var cityTemp = document.createElement("p")
@@ -77,9 +86,9 @@ var currentWeather = function(weather) {
 
                 if (cityUv <= 4 ) {
                     $(cityUvContainer).addClass("bg-success fs-4");  // use the UV index to determine the background color and assign boostrap class accordingly 
-                } else if (cityUv <=7 && cityUvi > 4) {
+                } else if (cityUv <=7 && cityUv > 4) {
                     $(cityUvContainer).addClass("bg-warning fs-4");
-                } else if (cityUv <= 10 && cityUvi > 7) {
+                } else if (cityUv <= 10 && cityUv > 7) {
                     $(cityUvContainer).addClass("bg-danger fs-4");
                 }
             })
@@ -87,4 +96,41 @@ var currentWeather = function(weather) {
     });
 }
 
-currentWeather();
+var fiveDay = function(weather) {
+    fiveDayEl.empty();
+    document.querySelector("#five-day-header").textContent = "5 Day Forcast";
+
+    fiveDayEl.empty();
+
+    // create a loop
+    for (i = 5; i < weather.list.length; i = i + 8) {
+        var fiveDayCard = document.createElement("div")
+        fiveDayCard.setAttribute("class", "card col-lg-2 bg-secondary ")
+
+        var forecastDate = document.createElement("h5")
+        forecastDate.textContent = moment.unix(weather.list[i].dt).format("MMM DD, YYYY");
+        //forecastDate.addClass("card-header")
+        fiveDayCard.append(forecastDate);
+
+        var forecastIcon = document.createElement("img")
+        forecastIcon.setAttribute("src", `https://openweathermap.org/img/wn/${weather.list[i].weather[0].icon}@2x.png` )
+        fiveDayCard.append(forecastIcon)
+
+        var cityTemp = document.createElement("p")
+            cityTemp.textContent = "Temp: " + weather.list[i].main.temp + "°F"
+            fiveDayCard.append(cityTemp)
+            
+            var cityWind = document.createElement("p")
+            cityWind.textContent = "Wind: " + weather.list[i].wind.speed + "MPH"
+            fiveDayCard.append(cityWind)
+
+            
+            var cityHumidity = document.createElement("p")
+            cityHumidity.textContent = "Humidity: " + weather.list[i].main.humidity + "%"
+            fiveDayCard.append(cityHumidity)
+
+            fiveDayEl.append(fiveDayCard)
+
+    }
+
+}

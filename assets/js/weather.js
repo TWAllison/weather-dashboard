@@ -8,7 +8,12 @@ var apiKey = "a6b61b1b7f92f9c968b0e70a23502785"
 
 
 
-
+$(document).on("click", ".btn-secondary",  function (e) {
+    console.log("button clicked")
+    cityName = ($(this).text())
+    fetchWeatherData(cityName)
+    console.log(cityName);
+});
 
 $("#search-btn").on("click", function () {  // listen for click on search btn then takes sibling data value (input-form) and sets value to cityName
     if (!$(this).siblings("input").val()) {
@@ -16,14 +21,14 @@ $("#search-btn").on("click", function () {  // listen for click on search btn th
         return
     } else {
         var cityName = $(this).siblings("input").val() // set the value from the input form as the var cityName
-        
+
         if (localStorage.getItem("city") === null) { // save the value of cityName to local storage in an array 
-            localStorage.setItem("city",'[]');
+            localStorage.setItem("city", '[]');
         }
-    
+
         var searchHistory = JSON.parse(localStorage.getItem("city"));
         searchHistory.push(cityName);
-    
+
         localStorage.setItem("city", JSON.stringify(searchHistory));
     }
 
@@ -140,7 +145,7 @@ var fiveDay = function (weather) {
     }
 }
 
-var getSearchHistory = function() {
+var getSearchHistory = function () {
 
     for (var i = 0; i < searchHistory.length; i++) {
         var listItem = document.createElement("li");

@@ -1,0 +1,20 @@
+.btn-primary, .btn-secondary {
+    width:100%;
+    margin: .5rem 0rem;
+}
+
+li {
+    list-style: none;
+}
+
+.devider {
+    border-bottom:4px solid grey;
+    width: 100%;
+    margin:.25rem;
+    display: block;
+}
+
+.card {
+    margin: .75rem;
+    
+}

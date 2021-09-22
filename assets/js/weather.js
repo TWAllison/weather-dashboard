@@ -6,9 +6,7 @@ var searchList = $("#search-list");
 var apiKey = "a6b61b1b7f92f9c968b0e70a23502785"
 //var cityName = "Reno"
 
-
-
-$(document).on("click", ".btn-secondary",  function (e) {
+$(document).on("click", ".btn-secondary", function (e) { // takes value from click on secondary buttons and passes to fetchWeatherData function
     console.log("button clicked")
     cityName = ($(this).text())
     fetchWeatherData(cityName)
@@ -49,11 +47,7 @@ var fetchWeatherData = function (cityName) {
                 })
             }
         });
-
-
-
 };
-
 
 var currentWeather = function (weather) {
 
@@ -117,7 +111,7 @@ var fiveDay = function (weather) {
     // create a loop
     for (i = 5; i < weather.list.length; i = i + 8) {
         var fiveDayCard = document.createElement("div")
-        fiveDayCard.setAttribute("class", "card col-lg-2 bg-secondary ")
+        fiveDayCard.setAttribute("class", "card col-lg-2 bg-secondary bg-gradient ")
 
         var forecastDate = document.createElement("h5")
         forecastDate.textContent = moment.unix(weather.list[i].dt).format("MMM DD, YYYY");

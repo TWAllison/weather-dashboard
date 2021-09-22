@@ -1,7 +1,8 @@
-var weatherEl = $("#current-weather")
+var weatherEl = $("#current-weather");
 var fiveDayEl = $("#five-day");
 var fiveDayHeaderEl = $("#five-day-header");
-
+var searchHistory = JSON.parse(localStorage.getItem("city")) || [];
+var searchList = $("#search-list");
 var apiKey = "a6b61b1b7f92f9c968b0e70a23502785"
 //var cityName = "Reno"
 
@@ -14,9 +15,9 @@ $("#search-btn").on("click", function () {  // listen for click on search btn th
         alert("Enter a city Name")
         return
     } else {
-        var cityName = $(this).siblings("input").val()
-        //test save function here
-        if (localStorage.getItem("city") === null) {
+        var cityName = $(this).siblings("input").val() // set the value from the input form as the var cityName
+        
+        if (localStorage.getItem("city") === null) { // save the value of cityName to local storage in an array 
             localStorage.setItem("city",'[]');
         }
     
@@ -48,20 +49,6 @@ var fetchWeatherData = function (cityName) {
 
 };
 
-/*var saveSearch = function () {
-    var newSearch = $("#city-name").val();
-    if (localStorage.getItem("city") === null) {
-        localStorage.setItem("city",'[]');
-    }
-
-    var searchHistory = JSON.parse(localStorage.getItem("city"));
-    searchHistory.push(newSearch);
-
-    localStorage.setItem("city", JSON.stringify(searchHistory));
-
-    saveSearch();
-}
-*/
 
 var currentWeather = function (weather) {
 
@@ -150,7 +137,21 @@ var fiveDay = function (weather) {
         fiveDayCard.append(cityHumidity)
 
         fiveDayEl.append(fiveDayCard)
-
     }
-
 }
+
+var getSearchHistory = function() {
+
+    for (var i = 0; i < searchHistory.length; i++) {
+        var listItem = document.createElement("li");
+        var secondaryButton = document.createElement("button")
+        secondaryButton.textContent = searchHistory[i];
+        secondaryButton.setAttribute("class", "btn btn-secondary");
+        secondaryButton.setAttribute("type", "button");
+
+        listItem.append(secondaryButton);
+        searchList.append(listItem);
+    }
+};
+
+getSearchHistory();
